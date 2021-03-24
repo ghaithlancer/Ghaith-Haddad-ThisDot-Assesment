@@ -15,10 +15,8 @@ function GitGui() {
     const [usersPerPage, setUsersPerPage] = useState(10);
 
     const getUsers = (e) => {
-    // function getUsers(userSearch){        
         e.preventDefault()
-        // setUserSearch(usersearchRef)
-        console.log("hi" + userSearch)
+        console.log("Search Term: " + userSearch)
         fetch("https://api.github.com/search/users?q="+ userSearch + "&per_page=100")
         .then((res) => res.json())
         .then(git => setUsers(git.items))
@@ -27,19 +25,14 @@ function GitGui() {
 
     function handleChange(e){
         setUserSearch(e.target.value)
-        // console.log(userSearch)
     }
 
-    // useEffect(() => {
-    //     getUsers("david");
-    // }, [userSearch])
 
     console.log(users)
 
-    // (e) => setUserSearch(e.target.value)
     return (
         <>
-            <Navbar bg="dark" variant="dark" className="bg-light justify-content-between">
+            <Navbar bg="dark" variant="dark" className="bg-light justify-content-between fixed-top">
                 <Navbar.Brand>
                     <img
                     alt="logo"
@@ -50,33 +43,32 @@ function GitGui() {
                     />{' '}
                     GitHub Users Search
                 </Navbar.Brand>
-                {/* <Form inline>
-                    <FormControl type="text" ref={usersearchRef} placeholder="Search Users" className="mr-sm-2" />
-                    <Button variant="outline-success" type="submit" onClick={() => getUsers("david")}>Search</Button>
-                </Form> */}
-                <form onSubmit={getUsers}>
-                <input type="text" onChange={handleChange} />
-                <button type="submit" >Search </button>
-                </form>
+                <Form inline onSubmit={getUsers}>
+                    <FormControl type="text" ref={usersearchRef} placeholder="Search Users" className="mr-sm-2" onChange={handleChange} />
+                    <Button variant="outline-success" type="submit" >Search</Button>
+                </Form>
             </Navbar> <br/>
-            <div>
+            <div style={{backgroundColor: "#0077ff", marginTop: "-25px", paddingLeft: "80px", color: "white"}}><br/>
+                <h2>Search Results for: {userSearch}</h2>
+            </div>
+            <div style={{display: "flex", flexWrap: "warp", flexFlow: "wrap", backgroundColor: "#0077ff", marginTop: "-25px"}}>
             {!loading ? (
-                <h3>Loading...</h3>
+                <div style={{backgroundColor: "#0077ff"}}>
+                
+                </div>
                 ) : (
                     users.map(user => {
                     return (
-                        <div key={user.id} className="d-flex justify-content-center">
-                        <Card style={{ width: '18rem' }} onClick={(e) =>{
-                            window.open(user.html_url)
-                        }}>
-                            <div>{JSON.stringify(user.login)}</div>
-                            <Card.Img src={user.avatar_url} variant="top" />
+                        <div key={user.id} className="d-flex justify-content-center" style={{flex: "1", margin: "50px", backgroundColor: "#0077ff"}}>
+                        <Card style={{ width: '20rem' }}>
+                            <Card.Img src={user.avatar_url} variant="top" onClick={(e) =>{window.open(user.url)}} style={{padding: "10px"}}/>
                             <Card.Body>
-                                <Card.Title>{user.name}</Card.Title>
-                                <Card.Subtitle>{user.login}</Card.Subtitle>
-                                <Card.Subtitle>{user.repos} Repos</Card.Subtitle>
-                                <Card.Subtitle>{user.followers} Followers</Card.Subtitle>
-                                <Card.Subtitle>{user.following} Following</Card.Subtitle>
+                                <Card.Title >{user.login}</Card.Title>
+                                
+                                <Card.Subtitle onClick={(e) =>{window.open(user.repos_url)}} style={{marginBottom: "15px"}}>Repos Url</Card.Subtitle>
+                                <Card.Subtitle onClick={(e) =>{window.open(user.followers_url)}} style={{marginBottom: "15px"}}>Followers Url</Card.Subtitle>
+                                <Card.Subtitle onClick={(e) =>{window.open(user.following_url)}} style={{marginBottom: "15px"}}>Following Url</Card.Subtitle>
+                                <Card.Subtitle onClick={(e) =>{window.open(user.organizations_url)}} style={{marginBottom: "15px"}}>Organization Url</Card.Subtitle>
                             </Card.Body>
                         </Card>
                         </div>
