@@ -9,6 +9,7 @@ import Pagination from './Pagination'
 function App() {
 
     const [users, setUsers] = useState([]);
+    const [usersCount, setUsersCount] = useState(0);
     const [userSearch, setUserSearch] = useState("");
     const usersearchRef = useRef();
     const [loading, setLoading] = useState(false);
@@ -22,11 +23,14 @@ function App() {
         setLoading(true)
         fetch("https://api.github.com/search/users?q="+ userSearch + "&per_page=100")
         .then((res) => res.json())
-        .then(git => setUsers(git.items))
+        .then(git => {
+          setUsersCount(git.total_count)
+          setUsers(git.items)
+        })
         setCurrentPage(1)
         setLoading(false)
         // console.log("Search Term: " + userSearch)
-        // console.log(users)
+        console.log(usersCount)
     }
 
     function handleChange(e){
@@ -59,10 +63,10 @@ function App() {
                     <Button variant="outline-primary" type="submit" >Search</Button>
                 </Form>
             </Navbar> <br/>
-            <div style={{backgroundColor: "#0077ff", marginTop: "-25px", paddingLeft: "80px", color: "white"}}><br/>
-                <h2>Search Results for: {userSearch}</h2>
+            <div style={{backgroundColor: "#0077ff", paddingLeft: "80px", color: "white"}}><br/>
+                <h2 style={{marginTop: "50px", backgroundColor: "#0077ff"}}>Found {usersCount} search results for: {userSearch}</h2>
             </div>
-            <div>
+            <div style={{ backgroundColor: "#0077ff", marginTop: "-10px"}}>
                 <UserCards users={currentUsers} loading={loading} />
                 <Pagination usersPerPage={usersPerPage} totalUsers={users.length} paginate={paginate}/>            
             </div>
