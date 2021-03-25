@@ -3,6 +3,7 @@ import { render } from '@testing-library/react'
 import React, { useEffect, useState, useRef } from 'react'
 import { Navbar, Form, Button, FormControl, Card, Image } from 'react-bootstrap'
 import logo from './github_logo.png'
+import UserCards from "./UserCards"
 
 
 function GitGui() {
@@ -16,11 +17,13 @@ function GitGui() {
 
     const getUsers = (e) => {
         e.preventDefault()
-        console.log("Search Term: " + userSearch)
+        setLoading(true)
         fetch("https://api.github.com/search/users?q="+ userSearch + "&per_page=100")
         .then((res) => res.json())
         .then(git => setUsers(git.items))
-        setLoading(true)
+        setLoading(false)
+        // console.log("Search Term: " + userSearch)
+        // console.log(users)
     }
 
     function handleChange(e){
@@ -28,7 +31,10 @@ function GitGui() {
     }
 
 
-    console.log(users)
+    const indexOfLastUser = currentPage * usersPerPage;
+    const indexOfFirstUser = indexOfLastUser - usersPerPage;
+    const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
+
 
     return (
         <>
@@ -52,29 +58,7 @@ function GitGui() {
                 <h2>Search Results for: {userSearch}</h2>
             </div>
             <div style={{display: "flex", flexWrap: "warp", flexFlow: "wrap", backgroundColor: "#0077ff", marginTop: "-25px"}}>
-            {!loading ? (
-                <div style={{backgroundColor: "#0077ff"}}>
-                
-                </div>
-                ) : (
-                    users.map(user => {
-                    return (
-                        <div key={user.id} className="d-flex justify-content-center" style={{flex: "1", margin: "50px", backgroundColor: "#0077ff"}}>
-                        <Card style={{ width: '20rem' }}>
-                            <Card.Img src={user.avatar_url} variant="top" onClick={(e) =>{window.open(user.url)}} style={{padding: "10px"}}/>
-                            <Card.Body>
-                                <Card.Title >{user.login}</Card.Title>
-                                
-                                <Card.Subtitle onClick={(e) =>{window.open(user.repos_url)}} style={{marginBottom: "15px"}}>Repos Url</Card.Subtitle>
-                                <Card.Subtitle onClick={(e) =>{window.open(user.followers_url)}} style={{marginBottom: "15px"}}>Followers Url</Card.Subtitle>
-                                <Card.Subtitle onClick={(e) =>{window.open(user.following_url)}} style={{marginBottom: "15px"}}>Following Url</Card.Subtitle>
-                                <Card.Subtitle onClick={(e) =>{window.open(user.organizations_url)}} style={{marginBottom: "15px"}}>Organization Url</Card.Subtitle>
-                            </Card.Body>
-                        </Card>
-                        </div>
-                );
-                })
-            )}
+                <UserCards users={currentUsers} loading={loading} />            
             </div>
 
 
