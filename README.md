@@ -16,3 +16,5 @@ The same goes for the card buttons.
 Now although the search results count might be much higher than what's shown. But that's due to the fact that the api call simply has to be run again if you wanted to get lets say the 2nd page of the results. Which is why I configured it to display the first 100 users.
 
 I'll be more than happy to explain further as to why I made this decision.
+
+PS. I've kept some of the files that I worked on just so that you can have an idea of how i reached my final result. I tried multiple ways to get the final result then chose one to go with.
